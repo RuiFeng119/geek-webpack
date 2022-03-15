@@ -44,11 +44,10 @@ const setMPA = () => {
 // const { entry, htmlWebpackPlugins } = setMPA();
 
 module.exports = {
-  watch: true,
   entry: './src/search/index.js',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name]].js'
+    filename: '[name].js'
   },
   mode: 'development',
   module: {
@@ -90,13 +89,10 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin()
   ],
-  // plugins: [
-  //   new webpack.HotModuleReplacementPlugin(),
-  //   new CleanWebpackPlugin(),
-  // ].concat(htmlWebpackPlugins),
   devServer: {
     contentBase: './dist/',
     hot: true
   }
+
   // devtool: 'source-map',
 }
