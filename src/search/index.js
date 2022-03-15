@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import './search.less'
-import bg from './assets/bg.jpg'
+import bg from './assets/bg.png'
 
 
 class Search extends React.Component {
