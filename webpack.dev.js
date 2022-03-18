@@ -1,50 +1,41 @@
 'use strict';
 
-
-// const glob = require('glob');
+const glob = require('glob');
 const path = require('path');
 const webpack = require('webpack');
-// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
+// clean-webpack-plugin
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// html-webpack-plugin
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+// 支持多页面打包通用方案
 const setMPA = () => {
   const entry = {}
-  const htmlWebpackPlugins = []
-  const entryFiles = glob.sync(path.join(__dirname, './src/*/index.js'))
-
-  Object.keys(entryFiles).map(index => { // Object.keys([])返回数组中的每一项的index组成的数组
-    const entryFile = entryFiles[index];
-    // 获取每一个模块的名称
-    const match = entryFile.match(/src\/(.*)\/index\.js/);
+  const htmlWebpackPlugins = [];
+  // 获取src下所有文件
+  const entryFiles = glob.sync(path.resolve(__dirname, './src/*/index.{js,ts}'));
+  entryFiles.forEach(file => {
+    const match = file.match(/src\/(.*)\/index.(js|ts)/);
     const pageName = match && match[1];
-    // 入口文件
-    entry[pageName] = entryFile;
-    // plugin
+    entry[pageName] = file;
     htmlWebpackPlugins.push(
       new HtmlWebpackPlugin({
-        template: path.join(__dirname, `src/${pageName}/index.html`), // html模板所在的文件路径，可以根据自己指定模板来生成特定的html文件
-        filename: `${pageName}.html`, // 打包出来的文件名称
-        chunks: [pageName], // chunks主要用于多入口文件，有多个入口文件，就会有多个输出文件，chunks选择去使用哪些js文件    
-        inject: true,
-        minify: {
-          html5: true,
-          collapseWhitespace: true, // 去除空格
-          minifyCss: true, // 压缩html中的css
-          minifyJs: true, // 压缩html代码中的js
-
-        }
-      })
-    )
+        template: path.resolve(__dirname, `./src/${pageName}/index.html`),
+        filename: `${pageName}.html`,
+        chunks: [pageName],
+        inject: true, // 是否将打包出来的js/css文件插入到html中，默认为true
+        minify: true, // 生产环境默认为true
+      }))
   })
   return {
     entry,
-    htmlWebpackPlugins
+    htmlWebpackPlugins,
   }
 }
-// const { entry, htmlWebpackPlugins } = setMPA();
+const { entry, htmlWebpackPlugins } = setMPA();
 
 module.exports = {
-  entry: './src/search/index.js',
+  entry: entry,
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js'
@@ -87,12 +78,12 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin()
-  ],
+  ].concat(htmlWebpackPlugins),
   devServer: {
     contentBase: './dist/',
     hot: true
-  }
-
-  // devtool: 'source-map',
+  },
+  devtool: 'cheap-source-map'
 }
