@@ -22,6 +22,9 @@
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^4.0.0",
     "cssnano": "^4.1.10",
+    "eslint": "^8.11.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-webpack-plugin": "^3.1.1",
     "file-loader": "^6.0.0",
     "glob": "^7.1.6",
     "html-webpack-externals-plugin": "^3.8.0",
@@ -42,6 +45,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "large-num-f119": "^1.0.0",
     "lib-flexible": "^0.3.2"
   }
 }

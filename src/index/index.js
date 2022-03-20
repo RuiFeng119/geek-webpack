@@ -2,17 +2,17 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { helloworld } from './helloworld';
 
-import '../../commons/common.js'
+import '../../commons/common.js';
 
-document.write(helloworld())
+document.write(helloworld());
 
 class Index extends React.Component {
   render() {
-    return <div >Index页面</div>
+    return <div >Index页面内容</div>;
   }
 }
 
 ReactDom.render(
   <Index />,
   document.getElementById('root'),
-)
+);

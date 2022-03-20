@@ -10,10 +10,12 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // clean-webpack-plugin
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// eslint-webpack-plugins
+const EslintWebpackPlugin = require('eslint-webpack-plugin');
 
 // 支持多页面打包通用方案
 const setMPA = () => {
-  const entry = {}
+  const entry = {};
   const htmlWebpackPlugins = [];
   // 获取src下所有文件
   const entryFiles = glob.sync(path.resolve(__dirname, './src/*/index.{js,ts}'));
@@ -28,13 +30,13 @@ const setMPA = () => {
         chunks: [pageName],
         inject: true, // 是否将打包出来的js/css文件插入到html中，默认为true
         minify: true, // 生产环境默认为true
-      }))
-  })
+      }));
+  });
   return {
     entry,
     htmlWebpackPlugins,
-  }
-}
+  };
+};
 
 const { entry, htmlWebpackPlugins } = setMPA();
 
@@ -44,7 +46,7 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name]_[chunkhash:8].js'
   },
-  mode: 'none',
+  mode: 'production',
   module: {
     rules: [
       {
@@ -122,6 +124,7 @@ module.exports = {
     //   inject: true, // 是否将打包出来的js/css文件插入到html中，默认为true
     //   minify: true, // 生产环境默认为true
     // })
+    new EslintWebpackPlugin()
   ].concat(htmlWebpackPlugins),
   // devtool: 'source-map',
 
@@ -142,6 +145,6 @@ module.exports = {
           priority: -20
         }
       }
-    }
+    },
   }
-}
+};

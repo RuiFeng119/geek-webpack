@@ -7,6 +7,8 @@ const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // html-webpack-plugin
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// eslint-webpack-plugin
+const EslintWebpackPlugin = require('eslint-webpack-plugin');
 
 // 支持多页面打包通用方案
 const setMPA = () => {
@@ -25,13 +27,13 @@ const setMPA = () => {
         chunks: [pageName],
         inject: true, // 是否将打包出来的js/css文件插入到html中，默认为true
         minify: true, // 生产环境默认为true
-      }))
-  })
+      }));
+  });
   return {
     entry,
     htmlWebpackPlugins,
-  }
-}
+  };
+};
 const { entry, htmlWebpackPlugins } = setMPA();
 
 module.exports = {
@@ -79,11 +81,12 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new EslintWebpackPlugin()
   ].concat(htmlWebpackPlugins),
   devServer: {
     contentBase: './dist/',
     hot: true
   },
   devtool: 'cheap-source-map'
-}
+};
