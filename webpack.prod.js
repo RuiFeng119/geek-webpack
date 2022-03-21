@@ -12,6 +12,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // eslint-webpack-plugins
 const EslintWebpackPlugin = require('eslint-webpack-plugin');
+// webpack构建日志提示插件
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
 // 支持多页面打包通用方案
 const setMPA = () => {
@@ -124,7 +126,8 @@ module.exports = {
     //   inject: true, // 是否将打包出来的js/css文件插入到html中，默认为true
     //   minify: true, // 生产环境默认为true
     // })
-    new EslintWebpackPlugin()
+    new EslintWebpackPlugin(),
+    new FriendlyErrorsWebpackPlugin()
   ].concat(htmlWebpackPlugins),
   // devtool: 'source-map',
 
@@ -146,5 +149,6 @@ module.exports = {
         }
       }
     },
-  }
+  },
+  stats: 'errors-only'
 };

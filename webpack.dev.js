@@ -9,10 +9,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // eslint-webpack-plugin
 const EslintWebpackPlugin = require('eslint-webpack-plugin');
+// webpack构建日志提示插件
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 // 支持多页面打包通用方案
 const setMPA = () => {
-  const entry = {}
+  const entry = {};
   const htmlWebpackPlugins = [];
   // 获取src下所有文件
   const entryFiles = glob.sync(path.resolve(__dirname, './src/*/index.{js,ts}'));
@@ -82,11 +84,13 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new EslintWebpackPlugin()
+    new EslintWebpackPlugin(),
+    new FriendlyErrorsWebpackPlugin()
   ].concat(htmlWebpackPlugins),
   devServer: {
     contentBase: './dist/',
-    hot: true
+    hot: true,
+    stats: 'errors-only'
   },
   devtool: 'cheap-source-map'
 };

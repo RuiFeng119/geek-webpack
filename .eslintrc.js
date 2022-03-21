@@ -17,8 +17,14 @@ module.exports = {
   "plugins": [
     "react"
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
-    "no-console": "warn",
-    "semi": "error"
+    "semi": "error",
+    "no-undef": "off",
+    "no-unused-vars": "off"
   }
 };
