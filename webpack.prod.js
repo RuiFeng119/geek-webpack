@@ -14,6 +14,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslintWebpackPlugin = require('eslint-webpack-plugin');
 // webpack构建日志提示插件
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+// 速度分析 speed-measure-webpack-plugin插件
+const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
+// 体积分析 webpack-bundle-analyzer插件
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// 并行压缩插件
+const TerserPlugin = require('terser-webpack-plugin');
 
 // 支持多页面打包通用方案
 const setMPA = () => {
@@ -40,9 +46,11 @@ const setMPA = () => {
   };
 };
 
+const smp = new SpeedMeasureWebpackPlugin();
+
 const { entry, htmlWebpackPlugins } = setMPA();
 
-module.exports = {
+module.exports = smp.wrap({
   entry: entry,
   output: {
     path: path.join(__dirname, 'dist'),
@@ -54,6 +62,16 @@ module.exports = {
       {
         test: /\.js$/,
         use: 'babel-loader'
+        // 多进程构建代码，该项目比较简单，所以使用thread-loader可能会使构建变慢
+        // use: [
+        //   {
+        //     loader: 'thread-loader',
+        //     options: {
+        //       workers: 3
+        //     }
+        //   },
+        //   'babel-loader'
+        // ]
       },
       {
         test: /\.css$/,
@@ -127,11 +145,13 @@ module.exports = {
     //   minify: true, // 生产环境默认为true
     // })
     new EslintWebpackPlugin(),
-    new FriendlyErrorsWebpackPlugin()
+    new FriendlyErrorsWebpackPlugin(),
+    // new BundleAnalyzerPlugin()
   ].concat(htmlWebpackPlugins),
   // devtool: 'source-map',
 
   optimization: {
+    // usedExports: true,
     splitChunks: {
       minSize: 0, // 设置了minSize为0，表示不会限制公共文件大小
       cacheGroups: {
@@ -149,6 +169,12 @@ module.exports = {
         }
       }
     },
+    // 多进程并行压缩代码，该项目比较简单，所以使用TerserPlugin反而会使构建变慢
+    // minimizer: [
+    //   new TerserPlugin({
+    //     parallel: false,
+    //   }),
+    // ],
   },
   stats: 'errors-only'
-};
+});

@@ -6,7 +6,7 @@ import './search.less';
 import bg from './assets/bg.png';
 
 import '../../commons/common.js';
-// import { a } from './tree-shaking.js'
+// import { a } from './tree-shaking.js';
 
 import largeNumber from 'large-num-f119';
 

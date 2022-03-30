@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --config webpack.dev.js --watch",
-    "dev": "webpack-dev-server --config webpack.dev.js --open"
+    "dev": "webpack-dev-server --config webpack.dev.js --open",
+    "build:stats": "webpack --config webpack.prod.js --json > stats.json"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +41,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "style-loader": "^1.2.1",
+    "thread-loader": "^3.0.4",
     "url-loader": "^4.1.0",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12",
@@ -47,6 +49,9 @@
   },
   "dependencies": {
     "large-num-f119": "^1.0.0",
-    "lib-flexible": "^0.3.2"
+    "lib-flexible": "^0.3.2",
+    "speed-measure-webpack-plugin": "^1.5.0",
+    "terser-webpack-plugin": "^4.2.3",
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }
