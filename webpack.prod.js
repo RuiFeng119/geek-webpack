@@ -54,7 +54,7 @@ const smp = new SpeedMeasureWebpackPlugin();
 
 const { entry, htmlWebpackPlugins } = setMPA();
 
-module.exports = smp.wrap({
+module.exports = {
   entry: entry,
   output: {
     path: path.join(__dirname, 'dist'),
@@ -154,16 +154,11 @@ module.exports = smp.wrap({
     // new BundleAnalyzerPlugin()
 
     new webpack.DllReferencePlugin({
-      // context: path.join(__dirname, 'build/library'),
       manifest: path.resolve(__dirname, './build/library/library.json') // webpack会根据manifest文件信息，分析哪些模块不需要打包，而是直接从暴露出来的内容中获取
     }),
     new AddAssetHtmlPlugin(
       {
-        filepath: path.resolve(__dirname, './build/library/*.dll.js'),
-        publicPath: './',
-        attributes: {
-          nomodule: false,
-        }
+        filepath: path.resolve(__dirname, 'build/library/*.dll.js'),
       }
     )
   ],
@@ -196,4 +191,6 @@ module.exports = smp.wrap({
     // ],
   },
   // stats: 'errors-only'
-});
+};
+
+// 使用DllReferencePlugin和add-asset-html-webpack-plugin时，不应该使用smp.wrap({})，否则打包出来的dist中不包含library.dll.js文件，具体原因待查。

@@ -49,7 +49,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "add-asset-html-webpack-plugin": "^5.0.1",
+    "add-asset-html-webpack-plugin": "^4.0.1",
     "large-num-f119": "^1.0.0",
     "lib-flexible": "^0.3.2",
     "speed-measure-webpack-plugin": "^1.5.0",
