@@ -8,7 +8,8 @@
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --config webpack.dev.js --watch",
     "dev": "webpack-dev-server --config webpack.dev.js --open",
-    "build:stats": "webpack --config webpack.prod.js --json > stats.json"
+    "build:stats": "webpack --config webpack.prod.js --json > stats.json",
+    "dll": "webpack --config webpack.dll.js"
   },
   "keywords": [],
   "author": "",
@@ -48,6 +49,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "add-asset-html-webpack-plugin": "^5.0.1",
     "large-num-f119": "^1.0.0",
     "lib-flexible": "^0.3.2",
     "speed-measure-webpack-plugin": "^1.5.0",
