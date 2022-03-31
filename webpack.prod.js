@@ -2,6 +2,8 @@
 
 const glob = require('glob');
 const path = require('path');
+const webpack = require('webpack');
+
 // 提取css文件插件
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // 压缩css资源
@@ -20,6 +22,8 @@ const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 // 并行压缩插件
 const TerserPlugin = require('terser-webpack-plugin');
+// 添加js文件或css文件至htmlWebpackPlugin生成的html文件中
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 
 // 支持多页面打包通用方案
 const setMPA = () => {
@@ -144,31 +148,46 @@ module.exports = smp.wrap({
     //   inject: true, // 是否将打包出来的js/css文件插入到html中，默认为true
     //   minify: true, // 生产环境默认为true
     // })
+    ...htmlWebpackPlugins,
     new EslintWebpackPlugin(),
     new FriendlyErrorsWebpackPlugin(),
     // new BundleAnalyzerPlugin()
-  ].concat(htmlWebpackPlugins),
+
+    new webpack.DllReferencePlugin({
+      // context: path.join(__dirname, 'build/library'),
+      manifest: path.resolve(__dirname, './build/library/library.json') // webpack会根据manifest文件信息，分析哪些模块不需要打包，而是直接从暴露出来的内容中获取
+    }),
+    new AddAssetHtmlPlugin(
+      {
+        filepath: path.resolve(__dirname, './build/library/*.dll.js'),
+        publicPath: './',
+        attributes: {
+          nomodule: false,
+        }
+      }
+    )
+  ],
   // devtool: 'source-map',
 
   optimization: {
     // usedExports: true,
-    splitChunks: {
-      minSize: 0, // 设置了minSize为0，表示不会限制公共文件大小
-      cacheGroups: {
-        vendors: {
-          test: /(react|react-dom)/,
-          name: 'vendors',
-          chunks: 'initial',
-          priority: -10
-        },
-        commons: {
-          name: 'commons',
-          chunks: 'all',
-          minChunks: 2,
-          priority: -20
-        }
-      }
-    },
+    // splitChunks: {
+    //   minSize: 0, // 设置了minSize为0，表示不会限制公共文件大小
+    //   cacheGroups: {
+    //     vendors: {
+    //       test: /(react|react-dom)/,
+    //       name: 'vendors',
+    //       chunks: 'initial',
+    //       priority: -10
+    //     },
+    //     commons: {
+    //       name: 'commons',
+    //       chunks: 'all',
+    //       minChunks: 2,
+    //       priority: -20
+    //     }
+    //   }
+    // },
     // 多进程并行压缩代码，该项目比较简单，所以使用TerserPlugin反而会使构建变慢
     // minimizer: [
     //   new TerserPlugin({
@@ -176,5 +195,5 @@ module.exports = smp.wrap({
     //   }),
     // ],
   },
-  stats: 'errors-only'
+  // stats: 'errors-only'
 });
