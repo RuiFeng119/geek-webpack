@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { helloworld } from './helloworld';
 
-import '../../commons/common.js';
+import '../../commons/common';
 
 document.write(helloworld());
 

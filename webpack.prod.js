@@ -24,6 +24,8 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
 // 添加js文件或css文件至htmlWebpackPlugin生成的html文件中
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
+// 为模块提供中间缓存
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 // 支持多页面打包通用方案
 const setMPA = () => {
@@ -65,7 +67,8 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: 'babel-loader'
+        include: path.resolve(__dirname, 'src'),
+        use: 'babel-loader?cacheDirectory=true'
         // 多进程构建代码，该项目比较简单，所以使用thread-loader可能会使构建变慢
         // use: [
         //   {
@@ -160,7 +163,8 @@ module.exports = {
       {
         filepath: path.resolve(__dirname, 'build/library/*.dll.js'),
       }
-    )
+    ),
+    new HardSourceWebpackPlugin()
   ],
   // devtool: 'source-map',
 
@@ -184,13 +188,22 @@ module.exports = {
     //   }
     // },
     // 多进程并行压缩代码，该项目比较简单，所以使用TerserPlugin反而会使构建变慢
-    // minimizer: [
-    //   new TerserPlugin({
-    //     parallel: false,
-    //   }),
-    // ],
+    minimizer: [
+      new TerserPlugin({
+        parallel: true, // 开启多进程
+        cache: true // 启用文件缓存
+      }),
+    ],
   },
-  // stats: 'errors-only'
+  stats: 'errors-only',
+  resolve: {
+    alias: {
+      'react': path.resolve(__dirname, './node_modules/react/umd/react.production.min.js'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom/umd/react-dom.production.min.js')
+    },
+    extensions: ['.js'],
+    mainFields: ['main']
+  }
 };
 
 // 使用DllReferencePlugin和add-asset-html-webpack-plugin时，不应该使用smp.wrap({})，否则打包出来的dist中不包含library.dll.js文件，具体原因待查。
