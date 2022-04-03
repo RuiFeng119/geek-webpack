@@ -26,6 +26,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 // 为模块提供中间缓存
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+// 删除未用到的css代码
+const PurgeCSSPlugin = require('purgecss-webpack-plugin');
 
 // 支持多页面打包通用方案
 const setMPA = () => {
@@ -55,6 +57,10 @@ const setMPA = () => {
 const smp = new SpeedMeasureWebpackPlugin();
 
 const { entry, htmlWebpackPlugins } = setMPA();
+
+const PATHS = {
+  src: path.join(__dirname, 'src')
+};
 
 module.exports = {
   entry: entry,
@@ -112,12 +118,17 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name]_[hash:8].[ext]' // ext表示资源后缀名，示例中图片和字体应用了后缀名
-          }
-        }
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name]_[hash:8].[ext]' // ext表示资源后缀名，示例中图片和字体应用了后缀名
+            }
+          },
+          // {
+          // loader: 'image-webpack-loader',
+          // }
+        ]
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
@@ -164,7 +175,10 @@ module.exports = {
         filepath: path.resolve(__dirname, 'build/library/*.dll.js'),
       }
     ),
-    new HardSourceWebpackPlugin()
+    new HardSourceWebpackPlugin(),
+    new PurgeCSSPlugin({
+      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
+    })
   ],
   // devtool: 'source-map',
 
@@ -195,7 +209,7 @@ module.exports = {
       }),
     ],
   },
-  stats: 'errors-only',
+  // stats: 'errors-only',
   resolve: {
     alias: {
       'react': path.resolve(__dirname, './node_modules/react/umd/react.production.min.js'),
