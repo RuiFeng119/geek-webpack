@@ -125,9 +125,9 @@ module.exports = {
               name: '[name]_[hash:8].[ext]' // ext表示资源后缀名，示例中图片和字体应用了后缀名
             }
           },
-          // {
-          // loader: 'image-webpack-loader',
-          // }
+          {
+            loader: 'image-webpack-loader',
+          }
         ]
       },
       {
@@ -202,12 +202,12 @@ module.exports = {
     //   }
     // },
     // 多进程并行压缩代码，该项目比较简单，所以使用TerserPlugin反而会使构建变慢
-    minimizer: [
-      new TerserPlugin({
-        parallel: true, // 开启多进程
-        cache: true // 启用文件缓存
-      }),
-    ],
+    // minimizer: [
+    //   new TerserPlugin({
+    //     parallel: true, // 开启多进程
+    //     cache: true // 启用文件缓存
+    //   }),
+    // ],
   },
   // stats: 'errors-only',
   resolve: {
@@ -221,3 +221,5 @@ module.exports = {
 };
 
 // 使用DllReferencePlugin和add-asset-html-webpack-plugin时，不应该使用smp.wrap({})，否则打包出来的dist中不包含library.dll.js文件，具体原因待查。
+// 使用purgecss-webpack-plugin虽然未用到的css文件会会被删除，但是打包出来的dist中不包含字体文件，导致css字体不生效。
+// 
